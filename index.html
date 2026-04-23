@@ -1,0 +1,1961 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg-main: #fbf3ef;
+            --bg-panel: rgba(255, 252, 249, 0.9);
+            --bg-card: rgba(255, 250, 247, 0.96);
+            --bg-soft: #fff7f2;
+            --accent: #d49c8c;
+            --accent-strong: #b97e71;
+            --accent-soft: #f3ddd5;
+            --mint-soft: #dcefe9;
+            --text-main: #463632;
+            --text-soft: #7d6761;
+            --line-soft: rgba(121, 94, 86, 0.14);
+            --shadow-lg: 0 26px 70px rgba(154, 122, 111, 0.13);
+            --shadow-md: 0 14px 30px rgba(154, 122, 111, 0.1);
+            --radius-xl: 30px;
+            --radius-lg: 22px;
+            --radius-md: 16px;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+            color: var(--text-main);
+            background:
+                radial-gradient(circle at top left, rgba(243, 221, 213, 0.78), transparent 28%),
+                radial-gradient(circle at bottom right, rgba(220, 239, 233, 0.82), transparent 32%),
+                linear-gradient(180deg, #fffaf7 0%, var(--bg-main) 100%);
+            padding: 20px;
+        }
+
+        .container-button {
+            width: min(100%, 980px);
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        body.is-dashboard {
+            align-items: center;
+            justify-content: center;
+        }
+
+        body.is-dashboard .container-button {
+            width: min(100%, 480px);
+        }
+
+        #selection-card:only-child,
+        #selection-card.standalone {
+            max-width: 480px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .app-intro,
+        .card,
+        .result-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--line-soft);
+            box-shadow: var(--shadow-lg);
+            backdrop-filter: blur(14px);
+        }
+
+        .app-intro {
+            padding: 24px 26px;
+            border-radius: var(--radius-xl);
+        }
+
+        .eyebrow,
+        .section-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 7px 12px;
+            border-radius: 999px;
+            background: var(--accent-soft);
+            color: var(--accent-strong);
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .app-intro h1 {
+            margin-top: 12px;
+            font-size: clamp(1.85rem, 3vw, 2.8rem);
+            line-height: 1.08;
+        }
+
+        .intro-copy {
+            margin-top: 10px;
+            max-width: 52ch;
+            color: var(--text-soft);
+            line-height: 1.7;
+        }
+
+        .card {
+            border-radius: var(--radius-xl);
+            padding: 24px;
+        }
+
+        .selection-card h2,
+        .form-title,
+        .result-header h2 {
+            color: var(--text-main);
+        }
+
+        /* ── Dashboard selection card ── */
+        .selection-card {
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--line-soft);
+            background: var(--bg-card);
+            box-shadow: var(--shadow-lg);
+            backdrop-filter: blur(14px);
+            overflow: hidden;
+        }
+
+        .dash-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--line-soft);
+            background: linear-gradient(135deg, #fef6f1, #fdf0ea);
+        }
+
+        .dash-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dash-brand-icon {
+            font-size: 1.3rem;
+            line-height: 1;
+        }
+
+        .dash-brand-name {
+            font-size: 1.05rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            color: var(--text-main);
+        }
+
+        .dash-tagline {
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--text-soft);
+        }
+
+        .dash-body {
+            padding: 22px 24px 24px;
+        }
+
+        .dash-lead {
+            font-size: 0.9rem;
+            color: var(--text-soft);
+            margin-bottom: 16px;
+            letter-spacing: 0.01em;
+            text-align: center;
+        }
+
+        .dash-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .dash-card-btn {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            width: 100%;
+            min-width: 0;
+            min-height: 72px;
+            padding: 16px 18px;
+            border-radius: 18px;
+            border: 1px solid var(--line-soft);
+            background: #ffffff;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            text-align: left;
+            box-shadow: 0 4px 14px rgba(154, 122, 111, 0.07);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+        }
+
+        .dash-card-btn:hover {
+            transform: translateY(-2px);
+            border-color: rgba(185, 126, 113, 0.32);
+            background: linear-gradient(135deg, #fff8f5, #fffaf7);
+            box-shadow: 0 12px 28px rgba(154, 122, 111, 0.13);
+        }
+
+        .dash-card-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 10px rgba(154, 122, 111, 0.1);
+        }
+
+        .dash-card-icon {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--accent-soft), #fceae2);
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+
+        .dash-card-content {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .dash-card-title {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--text-main);
+            line-height: 1.2;
+        }
+
+        .dash-card-desc {
+            font-size: 0.83rem;
+            color: var(--text-soft);
+            font-weight: 500;
+        }
+
+        .dash-card-arrow {
+            flex-shrink: 0;
+            font-size: 1.4rem;
+            color: var(--accent);
+            line-height: 1;
+            transition: transform 0.2s ease;
+        }
+
+        .dash-card-btn:hover .dash-card-arrow {
+            transform: translateX(3px);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .form-grid.single-view {
+            grid-template-columns: 1fr;
+        }
+
+        .form-grid.single-view section.card {
+            grid-column: 1 / -1;
+        }
+
+        .form-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .form-title {
+            margin-top: 8px;
+            font-size: 1.45rem;
+            line-height: 1.15;
+        }
+
+        .form-control {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .form-control label,
+        .form-control .group-label,
+        .checkbox-group legend {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .form-control input,
+        .form-control select {
+            width: 100%;
+            min-height: 50px;
+            padding: 0 16px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--line-soft);
+            background: #ffffff;
+            color: var(--text-main);
+            font-size: 0.98rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+            appearance: none;
+        }
+
+        .native-select-hidden {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+            width: 1px;
+            height: 1px;
+        }
+
+        .form-control input::placeholder {
+            color: #b39c96;
+        }
+
+        .form-control input:hover,
+        .form-control select:hover {
+            border-color: rgba(185, 126, 113, 0.34);
+        }
+
+        .form-control input:focus,
+        .form-control select:focus,
+        .form-control select[multiple]:focus {
+            outline: none;
+            border-color: var(--accent-strong);
+            box-shadow: 0 0 0 4px rgba(212, 156, 140, 0.2);
+            background: #fffdfb;
+        }
+
+        .tua_options_lt {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .custom-select {
+            position: relative;
+        }
+
+        .custom-select-trigger {
+            width: 100%;
+            min-height: 50px;
+            justify-content: space-between;
+            padding: 0 16px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--line-soft);
+            background: #ffffff;
+            color: var(--text-main);
+            font-size: 0.98rem;
+            font-weight: 700;
+            box-shadow: none;
+        }
+
+        .custom-select-trigger:hover {
+            background: #fffdfb;
+            box-shadow: none;
+        }
+
+        .custom-select.open .custom-select-trigger,
+        .custom-select-trigger:focus-visible {
+            border-color: var(--accent-strong);
+            box-shadow: 0 0 0 4px rgba(212, 156, 140, 0.2);
+            outline: none;
+        }
+
+        .custom-select-label {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .custom-select-arrow {
+            width: 10px;
+            height: 10px;
+            border-right: 2px solid var(--accent-strong);
+            border-bottom: 2px solid var(--accent-strong);
+            transform: rotate(45deg) translateY(-2px);
+            transition: transform 0.2s ease;
+        }
+
+        .custom-select.open .custom-select-arrow {
+            transform: rotate(-135deg) translateX(-1px);
+        }
+
+        .custom-select-popup {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            z-index: 20;
+            display: grid;
+            gap: 8px;
+            padding: 10px;
+            border-radius: 18px;
+            border: 1px solid var(--line-soft);
+            background: rgba(255, 252, 249, 0.98);
+            box-shadow: var(--shadow-md);
+        }
+
+        .custom-select-option {
+            width: 100%;
+            min-height: 44px;
+            justify-content: flex-start;
+            padding: 12px 14px;
+            border-radius: 14px;
+            border: 1px solid transparent;
+            background: #ffffff;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            font-weight: 700;
+            box-shadow: none;
+        }
+
+        .custom-select-option:hover {
+            background: var(--bg-soft);
+            box-shadow: none;
+        }
+
+        .custom-select-option.is-selected {
+            background: linear-gradient(135deg, #f3ddd5, #f7ebe6);
+            border-color: rgba(185, 126, 113, 0.28);
+            color: var(--accent-strong);
+        }
+
+        .switch-control {
+            padding: 14px;
+            border-radius: 18px;
+            border: 1px solid var(--line-soft);
+            background: var(--bg-soft);
+        }
+
+        .switch-control .group-label {
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+
+        .switch-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .pet-label {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 68px;
+            padding: 10px 12px;
+            border-radius: 999px;
+            background: rgba(243, 221, 213, 0.4);
+            color: var(--text-soft);
+            font-weight: 700;
+            border: 1px solid transparent;
+            transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .switch-control.is-dog .pet-label-dog,
+        .switch-control.is-cat .pet-label-cat {
+            color: var(--accent-strong);
+            background: linear-gradient(135deg, #f8e6df, #fff6f2);
+            border-color: rgba(185, 126, 113, 0.3);
+            height: 36px;
+            box-shadow: 0 8px 16px rgba(185, 126, 113, 0.12);
+            transform: translateY(-1px);
+        }
+
+        .switch-control.is-dog .pet-label-cat,
+        .switch-control.is-cat .pet-label-dog {
+            color: var(--text-soft);
+            background: rgba(243, 221, 213, 0.26);
+            border-color: rgba(121, 94, 86, 0.08);
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 58px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            inset: 0;
+            cursor: pointer;
+            background: #ead6cf;
+            border-radius: 999px;
+            transition: background-color 0.2s ease;
+        }
+
+        .slider::before {
+            content: "";
+            position: absolute;
+            left: 4px;
+            top: 4px;
+            width: 26px;
+            height: 26px;
+            background: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 4px 10px rgba(90, 72, 67, 0.12);
+            transition: transform 0.2s ease;
+        }
+
+        .switch input:checked + .slider {
+            background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+        }
+
+        .switch input:checked + .slider::before {
+            transform: translateX(24px);
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            width: 100%;
+            padding: 18px;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--line-soft);
+            background: var(--bg-soft);
+        }
+
+        .checkbox-group legend,
+        .checkbox-group .field-hint {
+            grid-column: 1 / -1;
+        }
+
+        .field-hint {
+            margin-top: -4px;
+            color: var(--text-soft);
+            font-size: 0.88rem;
+            line-height: 1.5;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-height: 44px;
+            padding: 10px 12px;
+            border-radius: 14px;
+            background: #ffffff;
+            color: var(--text-main);
+            font-size: 0.94rem;
+            border: 1px solid rgba(121, 94, 86, 0.1);
+            cursor: pointer;
+            transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+        }
+
+        .checkbox-item::before {
+            content: "";
+            flex-shrink: 0;
+            width: 18px;
+            height: 18px;
+            border-radius: 6px;
+            border: 1.5px solid rgba(185, 126, 113, 0.42);
+            background: #ffffff;
+            box-shadow: inset 0 1px 2px rgba(121, 94, 86, 0.08);
+            transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .checkbox-item input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+            width: 1px;
+            height: 1px;
+        }
+
+        .checkbox-item:hover {
+            border-color: rgba(185, 126, 113, 0.26);
+            background: #fffdfa;
+        }
+
+        .checkbox-item.is-checked {
+            background: linear-gradient(135deg, #f8e6df, #eef7f3);
+            border-color: rgba(185, 126, 113, 0.34);
+            box-shadow: 0 10px 22px rgba(185, 126, 113, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .checkbox-item.is-checked::before {
+            background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+            border-color: var(--accent-strong);
+            box-shadow: inset 0 0 0 4px rgba(255, 255, 255, 0.9);
+        }
+
+        .form-actions {
+            margin-top: 20px;
+        }
+
+        .form-actions button {
+            width: 100%;
+        }
+
+        button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-width: 0;
+            padding: 15px 18px;
+            border-radius: 18px;
+            border: 1px solid rgba(185, 126, 113, 0.22);
+            background: linear-gradient(135deg, #fbebe5, #f3ddd5);
+            color: var(--text-main);
+            font-size: 0.98rem;
+            font-weight: 800;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+            cursor: pointer;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+            background: linear-gradient(135deg, #fff1eb, #f5e1d9);
+        }
+
+        button:focus-visible {
+            outline: 2px solid rgba(185, 126, 113, 0.42);
+            outline-offset: 4px;
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .secondary-button {
+            background: #ffffff;
+            box-shadow: none;
+        }
+
+        .icon-button {
+            width: 44px;
+            min-width: 44px;
+            height: 44px;
+            padding: 0;
+            border-radius: 14px;
+        }
+
+        .button-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.72);
+            color: var(--accent-strong);
+            font-size: 0.9rem;
+            line-height: 1;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        dialog.result-card {
+            width: 100%;
+            height: max-content;
+            margin-top: 100px;
+            max-width: 100%;
+            padding: 0;
+            border: none;
+            background: transparent;
+        }
+
+        dialog.result-card::backdrop {
+            background: rgba(70, 54, 50, 0.18);
+            backdrop-filter: blur(4px);
+        }
+
+        .result-card {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            padding: 18px;
+        }
+
+        .result-panel {
+            width: min(100%, 560px);
+            padding: 22px;
+            border-radius: var(--radius-xl);
+        }
+
+        .result-header h2 {
+            margin-top: 10px;
+            font-size: 1.5rem;
+        }
+
+        .result-content {
+            margin-top: 14px;
+            padding: 16px;
+            background: var(--bg-soft);
+            border-radius: 18px;
+            min-height: 120px;
+            color: var(--text-main);
+            line-height: 1.7;
+        }
+
+        .result-summary {
+            padding-bottom: 14px;
+            margin-bottom: 14px;
+            border-bottom: 1px solid var(--line-soft);
+        }
+
+        .result-summary-label {
+            color: var(--text-soft);
+            font-size: 0.84rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .result-summary-value {
+            margin-top: 6px;
+            font-size: 1.4rem;
+            font-weight: 800;
+        }
+
+        .result-details {
+            display: grid;
+            gap: 10px;
+            max-height: 40vh;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent-strong) var(--bg-soft);
+            &::-webkit-scrollbar {
+                width: 8px;
+            }
+            &::-webkit-scrollbar-track {
+                background: var(--bg-soft);
+            }
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 11px 12px;
+            border-radius: 14px;
+            background: #ffffff;
+            border: 1px solid rgba(121, 94, 86, 0.08);
+        }
+
+        .result-row-label {
+            color: var(--text-soft);
+            font-weight: 700;
+        }
+
+        .result-row-value {
+            text-align: right;
+            font-weight: 700;
+        }
+
+        .result-actions {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        #reset-result {
+            background: linear-gradient(135deg, #f3ddd5, #dcefe9);
+        }
+
+        @media (max-width: 860px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 10px;
+            }
+
+            .container-button {
+                gap: 12px;
+            }
+
+            .app-intro {
+                padding: 18px;
+            }
+
+            .card,
+            .result-panel {
+                padding: 18px 14px;
+                border-radius: 22px;
+            }
+
+            .selection-card h2,
+            .form-title,
+            .result-header h2 {
+                font-size: 1.25rem;
+            }
+
+            .dash-header {
+                padding: 16px 18px;
+            }
+
+            .dash-body {
+                padding: 18px 18px 20px;
+            }
+
+            .dash-card-btn {
+                min-height: 64px;
+                padding: 14px 16px;
+                gap: 12px;
+            }
+
+            .dash-card-icon {
+                width: 38px;
+                height: 38px;
+                border-radius: 12px;
+                font-size: 1.1rem;
+            }
+
+            .intro-copy {
+                font-size: 0.94rem;
+            }
+
+            .tua_options_lt,
+            .checkbox-group,
+            .result-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .switch-row {
+                justify-content: center;
+            }
+
+            .pet-label {
+                min-width: 76px;
+            }
+
+            .form-control input,
+            .form-control select,
+            button {
+                min-height: 48px;
+                font-size: 0.95rem;
+            }
+
+            .checkbox-item {
+                min-height: 42px;
+            }
+
+            .result-card {
+                padding: 10px;
+                align-items: flex-end;
+            }
+
+            .result-panel {
+                width: 100%;
+                padding: 20px 16px;
+                border-bottom-left-radius: 16px;
+                border-bottom-right-radius: 16px;
+            }
+
+            .result-content {
+                padding: 14px 12px;
+            }
+
+            .result-summary-value {
+                font-size: 1.25rem;
+            }
+
+            .result-details {
+                max-height: 30vh;
+            }
+
+            .result-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+                padding: 10px 12px;
+            }
+
+            .result-row-value {
+                text-align: left;
+            }
+        }
+
+
+        /* button.css */
+        /* Modern button styles */
+        button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            min-width: 180px;
+            padding: 16px 24px;
+            border-radius: 18px;
+            border: 1px solid rgba(236, 72, 153, 0.16);
+            background: linear-gradient(135deg, rgba(255, 239, 247, 0.95), rgba(251, 213, 229, 0.82));
+            color: #4a1f3b;
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            transition: transform 0.24s ease, box-shadow 0.24s ease, background 0.24s ease;
+            cursor: pointer;
+        }
+        button span {
+            display: inline-block;
+        }
+        button .iconsax {
+            font-size: 1.15rem;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 18px 40px rgba(236, 72, 153, 0.12);
+            background: linear-gradient(135deg, rgba(255, 239, 247, 1), rgba(251, 213, 229, 0.92));
+        }
+        button:hover .iconsax {
+            transform: translateX(4px) scale(1.04);
+            color: #c026d3;
+        }
+        button:focus-visible {
+            outline: 2px solid rgba(244, 114, 182, 0.55);
+            outline-offset: 4px;
+        }
+        button:active {
+            transform: translateY(0px);
+            box-shadow: 0 12px 22px rgba(31, 41, 55, 0.1);
+        }
+        .secondary-button {
+            background: #fff5fb;
+            color: #7c2d60;
+            border-color: rgba(236, 72, 153, 0.16);
+            box-shadow: inset 0 0 0 1px rgba(236, 72, 153, 0.12);
+        }
+        .secondary-button:hover {
+            background: #ffe4f5;
+        }
+        @media (max-width: 540px) {
+            button {
+                width: 100%;
+                min-width: 0;
+                padding: 14px 20px;
+                font-size: 0.98rem;
+            }
+        }
+    </style>
+    <link rel="icon" href="asset/icon.png" type="image/x-icon">
+    <title>Tính Tiền Tua</title>
+</head>
+
+<body>
+    <main class="container-button">
+        <!-- Dashboard -->
+        <section class="selection-card" id="selection-card">
+            <header class="dash-header">
+                <div class="dash-brand">
+                    <span class="dash-brand-icon" aria-hidden="true">🐾</span>
+                    <span class="dash-brand-name">Sunpet</span>
+                </div>
+                <p class="dash-tagline">Bảng tính tiền tua Sunpet</p>
+            </header>
+
+            <div class="dash-body">
+                <p class="dash-lead">Chọn kiểu tính phù hợp để bắt đầu</p>
+                <div class="dash-cards">
+                    <button type="button" class="dash-card-btn" id="open-package">
+                        <span class="dash-card-icon" aria-hidden="true">📋</span>
+                        <span class="dash-card-content">
+                            <span class="dash-card-title">Liệu trình</span>
+                            <span class="dash-card-desc">Tính theo gói & cân nặng</span>
+                        </span>
+                        <span class="dash-card-arrow" aria-hidden="true">›</span>
+                    </button>
+
+                    <button type="button" class="dash-card-btn" id="open-retail">
+                        <span class="dash-card-icon" aria-hidden="true">✂️</span>
+                        <span class="dash-card-content">
+                            <span class="dash-card-title">Cắt lẻ</span>
+                            <span class="dash-card-desc">Tính theo % giá dịch vụ</span>
+                        </span>
+                        <span class="dash-card-arrow" aria-hidden="true">›</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Forms grid -->
+        <div class="form-grid hidden" id="forms-grid">
+            <!-- Form liệu trình -->
+            <section class="card" id="package-panel">
+                <div class="form-header">
+                    <button type="button" class="secondary-button icon-button" id="back-package" aria-label="Quay lại">
+                        <span aria-hidden="true">&larr;</span>
+                        <span class="sr-only">Quay lại</span>
+                    </button>
+                    <div>
+                        <p class="section-chip">Liệu trình</p>
+                        <h2 class="form-title">Tính theo gói</h2>
+                    </div>
+                </div>
+                <form id="package-form">
+                    <div class="form-control switch-control">
+                        <p class="group-label">Loại thú cưng</p>
+                        <div class="switch-row">
+                            <span class="pet-label pet-label-dog">
+                                Chó
+                            </span>
+                            <label class="switch custom-switch">
+                                <input type="checkbox" id="package-pet" checked aria-label="Chọn chó hoặc mèo">
+                                <span class="slider"></span>
+                            </label>
+                            <span class="pet-label pet-label-cat">
+                                Mèo
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-control">
+                        <label for="package-weight">Cân nặng (kg)</label>
+                        <input type="text" inputmode="decimal" id="package-weight" name="weight" placeholder="Nhập cân nặng" required>
+                    </div>
+                    <div class="tua_options_lt">
+                        <div class="form-control">
+                            <label for="package-tua">Chọn tua</label>
+                            <div class="custom-select" data-select-id="package-tua">
+                                <select id="package-tua" name="tua" required class="native-select-hidden">
+                                    <option class="option" value="10_buoc">10 bước</option>
+                                    <option class="option" value="12_buoc">12 bước</option>
+                                    <option class="option" value="18_buoc">18 bước</option>
+                                    <option class="option" value="cat_tia">Cắt/Tỉa</option>
+                                </select>
+                                <button
+                                    type="button"
+                                    class="custom-select-trigger"
+                                    id="package-tua-trigger"
+                                    aria-haspopup="listbox"
+                                    aria-expanded="false"
+                                    aria-controls="package-tua-options"
+                                >
+                                    <span class="custom-select-label">Chọn tua</span>
+                                    <span class="custom-select-arrow" aria-hidden="true"></span>
+                                </button>
+                                <div class="custom-select-popup hidden" id="package-tua-options"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-control">
+                            <label for="package-loai-tua">Loại tua</label>
+                            <div class="custom-select" data-select-id="package-loai-tua">
+                                <select id="package-loai-tua" name="loaiTua" required class="native-select-hidden">
+                                    <option class="option" value="long_dai">Lông dài</option>
+                                    <option class="option" value="long_sat">Lông ngắn</option>
+                                    <option class="option" value="khong_long">Không lông</option>
+                                    <option class="option" value="day_du">Đầy đủ</option>
+                                    <option class="option" value="toan_dien">Toàn diện</option>
+                                </select>
+                                <button
+                                    type="button"
+                                    class="custom-select-trigger"
+                                    id="package-loai-tua-trigger"
+                                    aria-haspopup="listbox"
+                                    aria-expanded="false"
+                                    aria-controls="package-loai-tua-options"
+                                >
+                                    <span class="custom-select-label">Chọn loại tua</span>
+                                    <span class="custom-select-arrow" aria-hidden="true"></span>
+                                </button>
+                                <div class="custom-select-popup hidden" id="package-loai-tua-options"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <fieldset class="form-control checkbox-group" id="package-service-group">
+                        <legend>Dịch vụ lẻ</legend>
+                        <p class="field-hint">Chọn thêm nếu có phát sinh.</p>
+                        <label class="checkbox-item"><input type="checkbox" value="danh_rang">Đánh răng</label>
+                        <label class="checkbox-item"><input type="checkbox" value="combo_vip">Combo Vip</label>
+                        <label class="checkbox-item"><input type="checkbox" value="tam_thao_moc">Tắm thảo mọc</label>
+                        <label class="checkbox-item"><input type="checkbox" value="tam_trang">Tắm trắng</label>
+                        <label class="checkbox-item"><input type="checkbox" value="hap_dau">Hấp dầu</label>
+                        <label class="checkbox-item"><input type="checkbox" value="spa_express">Spa Express</label>
+                        <label class="checkbox-item"><input type="checkbox" value="tam_ve">Tắm ve</label>
+                        <label class="checkbox-item"><input type="checkbox" value="tay_cau">Tẩy dầu</label>
+                    </fieldset>
+
+                    <div class="form-actions">
+                        <button type="submit">Xem kết quả liệu trình</button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Form cắt lẻ -->
+            <section class="card" id="retail-panel">
+                <div class="form-header">
+                    <button type="button" class="secondary-button icon-button" id="back-retail" aria-label="Quay lại">
+                        <span aria-hidden="true">&larr;</span>
+                        <span class="sr-only">Quay lại</span>
+                    </button>
+                    <div>
+                        <p class="section-chip">Cắt lẻ</p>
+                        <h2 class="form-title">Tính theo phần trăm</h2>
+                    </div>
+                </div>
+                <form id="retail-form">
+                    <div class="form-control">
+                        <label for="retail-price">Giá tiền</label>
+                        <input class="currency" type="text" inputmode="numeric" id="retail-price" name="price" placeholder="Nhập giá tiền" required>
+                    </div>
+
+                    <div class="form-control">
+                        <label for="retail-percent">Phần trăm</label>
+                        <input type="text" inputmode="numeric" id="retail-percent" name="percent" placeholder="Nhập phần trăm" required>
+                    </div>
+
+                    <fieldset class="form-control checkbox-group" id="retail-service-group">
+                        <legend>Dịch vụ lẻ</legend>
+                        <p class="field-hint">Có thể chọn nhiều dịch vụ cộng thêm.</p>
+                        <label class="checkbox-item"><input type="checkbox" value="7000">Đánh răng</label>
+                        <label class="checkbox-item"><input type="checkbox" value="8000">Combo Vip</label>
+                        <label class="checkbox-item"><input type="checkbox" value="10000">Tắm thảo mọc</label>
+                        <label class="checkbox-item"><input type="checkbox" value="10000">Tắm trắng</label>
+                        <label class="checkbox-item"><input type="checkbox" value="10000">Hấp dầu</label>
+                        <label class="checkbox-item"><input type="checkbox" value="10000">Spa Express</label>
+                        <label class="checkbox-item"><input type="checkbox" value="10000">Tắm ve</label>
+                        <label class="checkbox-item"><input type="checkbox" value="15000">Tẩy dầu</label>
+                    </fieldset>
+
+                    <div class="form-actions">
+                        <button type="submit">Xem kết quả cắt lẻ</button>
+                    </div>
+                </form>
+            </section>
+        </div>
+
+        <!-- Kết quả -->
+        <dialog class="result-card hidden" id="result-card">
+            <div class="result-panel card">
+                <div class="result-header">
+                    <p class="section-chip">Kết quả</p>
+                </div>
+                <div class="result-content" id="result-content">
+                    Vui lòng nhập dữ liệu và chọn nút gửi.
+                </div>
+                <div class="result-actions">
+                    <button type="button" id="cancel-result">Huỷ</button>
+                    <button type="button" id="reset-result">Nhập lại</button>
+                </div>
+            </div>
+        </dialog>
+    </main>
+    <script type="application/javascript">
+        const resultContent = document.getElementById('result-content');
+        const resultCard = document.getElementById('result-card');
+        const packageForm = document.getElementById('package-form');
+        const packageTuaSelect = document.getElementById('package-tua');
+        const packageFurSelect = document.getElementById('package-loai-tua');
+        const packagePetCheckbox = document.getElementById('package-pet');
+        const retailForm = document.getElementById('retail-form');
+        const retailPriceInput = document.getElementById('retail-price');
+        const retailPercentInput = document.getElementById('retail-percent');
+        const selectionCard = document.getElementById('selection-card');
+        const formsGrid = document.getElementById('forms-grid');
+        const openPackageBtn = document.getElementById('open-package');
+        const openRetailBtn = document.getElementById('open-retail');
+        const backPackageBtn = document.getElementById('back-package');
+        const backRetailBtn = document.getElementById('back-retail');
+        const packagePanel = document.getElementById('package-panel');
+        const retailPanel = document.getElementById('retail-panel');
+        const customSelectWrappers = document.querySelectorAll('.custom-select');
+        const packageSwitchControl = packagePetCheckbox?.closest('.switch-control');
+
+        const getPetType = (checkboxId) => {
+            const checkbox = document.getElementById(checkboxId);
+            return checkbox.checked ? 'Chó' : 'Mèo';
+        };
+
+        const getSelectedValues = (fieldId) => {
+            const field = document.getElementById(fieldId);
+            if (!field) return [];
+            if (field.tagName === 'SELECT') {
+                return Array.from(field.selectedOptions).map((option) => option.value);
+            }
+            return Array.from(field.querySelectorAll('input[type="checkbox"]:checked')).map((input) => input.value);
+        };
+
+        const getSelectedCheckboxDetails = (fieldId) => {
+            const field = document.getElementById(fieldId);
+            if (!field) return [];
+            return Array.from(field.querySelectorAll('input[type="checkbox"]:checked')).map((input) => ({
+                value: Number(input.value) || 0,
+                label: input.parentElement?.textContent.trim() || input.value,
+            }));
+        };
+
+        const priceData = {
+            bang_gia: {
+                cho: [
+                    {
+                        can_nang: '<1kg',
+                        goi: {
+                            '10_buoc': { long_sat: 8000, long_dai: 8000 },
+                            '12_buoc': { long_sat: 12000, long_dai: 12000 },
+                            '18_buoc': { long_sat: 20000, long_dai: 20000 },
+                            cao: { day_du: 18000, toan_dien: 26000 },
+                            cat_tia: { day_du: 45000, toan_dien: 53000 },
+                        },
+                    },
+                    {
+                        can_nang: '1-3kg',
+                        goi: {
+                            '10_buoc': { long_sat: 10000, long_dai: 10000 },
+                            '12_buoc': { long_sat: 14000, long_dai: 14000 },
+                            '18_buoc': { long_sat: 22000, long_dai: 22000 },
+                            cao: { day_du: 20000, toan_dien: 28000 },
+                            cat_tia: { day_du: 51000, toan_dien: 58000 },
+                        },
+                    },
+                    {
+                        can_nang: '3-5kg',
+                        goi: {
+                            '10_buoc': { long_sat: 14000, long_dai: 14000 },
+                            '12_buoc': { long_sat: 18000, long_dai: 18000 },
+                            '18_buoc': { long_sat: 26000, long_dai: 26000 },
+                            cao: { day_du: 24000, toan_dien: 32000 },
+                            cat_tia: { day_du: 58000, toan_dien: 62000 },
+                        },
+                    },
+                    {
+                        can_nang: '5-8kg',
+                        goi: {
+                            '10_buoc': { long_sat: 15000, long_dai: 17000 },
+                            '12_buoc': { long_sat: 20000, long_dai: 22000 },
+                            '18_buoc': { long_sat: 28000, long_dai: 30000 },
+                            cao: { day_du: 28000, toan_dien: 36000 },
+                            cat_tia: { day_du: 63000, toan_dien: 71000 },
+                        },
+                    },
+                    {
+                        can_nang: '8-12kg',
+                        goi: {
+                            '10_buoc': { long_sat: 15000, long_dai: 17000 },
+                            '12_buoc': { long_sat: 20000, long_dai: 22000 },
+                            '18_buoc': { long_sat: 28000, long_dai: 30000 },
+                            cao: { day_du: 28000, toan_dien: 36000 },
+                            cat_tia: { day_du: 63000, toan_dien: 71000 },
+                        },
+                    },
+                    {
+                        can_nang: '12-15kg',
+                        goi: {
+                            '10_buoc': { long_sat: 15000, long_dai: 17000 },
+                            '12_buoc': { long_sat: 20000, long_dai: 22000 },
+                            '18_buoc': { long_sat: 28000, long_dai: 30000 },
+                            cao: { day_du: 28000, toan_dien: 36000 },
+                            cat_tia: { day_du: 63000, toan_dien: 71000 },
+                        },
+                    },
+                    {
+                        can_nang: '15-20kg',
+                        goi: {
+                            '10_buoc': { long_sat: 15000, long_dai: 17000 },
+                            '12_buoc': { long_sat: 20000, long_dai: 22000 },
+                            '18_buoc': { long_sat: 28000, long_dai: 30000 },
+                            cao: { day_du: 28000, toan_dien: 36000 },
+                            cat_tia: { day_du: 63000, toan_dien: 71000 },
+                        },
+                    },
+                    {
+                        can_nang: '20-30kg',
+                        goi: {
+                            '10_buoc': { long_sat: 15000, long_dai: 17000 },
+                            '12_buoc': { long_sat: 20000, long_dai: 22000 },
+                            '18_buoc': { long_sat: 28000, long_dai: 30000 },
+                            cao: { day_du: 28000, toan_dien: 36000 },
+                            cat_tia: { day_du: 63000, toan_dien: 71000 },
+                        },
+                    },
+                ],
+                meo: [
+                    {
+                        can_nang: '<1kg',
+                        goi: {
+                            '10_buoc': { khong_long: 10000, long_dai: 10000 },
+                            '12_buoc': { khong_long: 14000, long_dai: 14000 },
+                            '18_buoc': { khong_long: 22000, long_dai: 22000 },
+                            cao: { day_du: 22000, toan_dien: 30000 },
+                            cat_tia: { day_du: 45000, toan_dien: 53000 },
+                        },
+                    },
+                    {
+                        can_nang: '1-3kg',
+                        goi: {
+                            '10_buoc': { khong_long: 12000, long_dai: 12000 },
+                            '12_buoc': { khong_long: 18000, long_dai: 18000 },
+                            '18_buoc': { khong_long: 26000, long_dai: 26000 },
+                            cao: { day_du: 26000, toan_dien: 34000 },
+                            cat_tia: { day_du: 51000, toan_dien: 59000 },
+                        },
+                    },
+                    {
+                        can_nang: '3-5kg',
+                        goi: {
+                            '10_buoc': { khong_long: 12000, long_dai: 12000 },
+                            '12_buoc': { khong_long: 18000, long_dai: 18000 },
+                            '18_buoc': { khong_long: 26000, long_dai: 26000 },
+                            cao: { day_du: 26000, toan_dien: 34000 },
+                            cat_tia: { day_du: 51000, toan_dien: 59000 },
+                        },
+                    },
+                    {
+                        can_nang: '5-8kg',
+                        goi: {
+                            '10_buoc': { khong_long: 12000, long_dai: 12000 },
+                            '12_buoc': { khong_long: 18000, long_dai: 18000 },
+                            '18_buoc': { khong_long: 26000, long_dai: 26000 },
+                            cao: { day_du: 26000, toan_dien: 34000 },
+                            cat_tia: { day_du: 51000, toan_dien: 59000 },
+                        },
+                    },
+                    {
+                        can_nang: '8-12kg',
+                        goi: {
+                            '10_buoc': { khong_long: 12000, long_dai: 12000 },
+                            '12_buoc': { khong_long: 18000, long_dai: 18000 },
+                            '18_buoc': { khong_long: 26000, long_dai: 26000 },
+                            cao: { day_du: 26000, toan_dien: 34000 },
+                            cat_tia: { day_du: 51000, toan_dien: 59000 },
+                        },
+                    },
+                ],
+                dich_vu_le: {
+                    danh_rang: 7000,
+                    combo_vip: 8000,
+                    tam_thao_moc: 10000,
+                    tam_trang: 10000,
+                    hap_dau: 10000,
+                    spa_express: 10000,
+                    tam_ve: 10000,
+                    tay_cau: 15000,
+                    cat_mong: 15000,
+                },
+            },
+        };
+
+        const serviceDisplayNames = {
+            danh_rang: 'Đánh răng/7k',
+            combo_vip: 'Combo Vip/8k',
+            tam_thao_moc: 'Tắm thảo mọc/10k',
+            tam_trang: 'Tắm trắng/10k',
+            hap_dau: 'Hấp dầu/10k',
+            spa_express: 'Spa Express/10k',
+            tam_ve: 'Tắm ve/10k',
+            tay_cau: 'Tẩy dầu/15k',
+            cat_mong: 'Cắt móng/15k',
+        };
+
+        const furOptionMap = {
+            cho: {
+                '10_buoc': [
+                    { value: 'long_sat', label: 'Lông sát' },
+                    { value: 'long_dai', label: 'Lông dài' },
+                ],
+                '12_buoc': [
+                    { value: 'long_sat', label: 'Lông sát' },
+                    { value: 'long_dai', label: 'Lông dài' },
+                ],
+                '18_buoc': [
+                    { value: 'long_sat', label: 'Lông sát' },
+                    { value: 'long_dai', label: 'Lông dài' },
+                ],
+                cao: [
+                    { value: 'day_du', label: 'Đầy đủ' },
+                    { value: 'toan_dien', label: 'Toàn diện' },
+                ],
+                cat_tia: [
+                    { value: 'day_du', label: 'Đầy đủ' },
+                    { value: 'toan_dien', label: 'Toàn diện' },
+                ],
+            },
+            meo: {
+                '10_buoc': [
+                    { value: 'khong_long', label: 'Không lông' },
+                    { value: 'long_dai', label: 'Lông dài' },
+                ],
+                '12_buoc': [
+                    { value: 'khong_long', label: 'Không lông' },
+                    { value: 'long_dai', label: 'Lông dài' },
+                ],
+                '18_buoc': [
+                    { value: 'long_sat', label: 'Lông sát' },
+                    { value: 'long_dai', label: 'Lông dài' },
+                ],
+                cao: [
+                    { value: 'day_du', label: 'Đầy đủ' },
+                    { value: 'toan_dien', label: 'Toàn diện' },
+                ],
+                cat_tia: [
+                    { value: 'day_du', label: 'Đầy đủ' },
+                    { value: 'toan_dien', label: 'Toàn diện' },
+                ],
+            },
+        };
+
+        const getPetTypeKey = (checkboxId) => {
+            const checkbox = document.getElementById(checkboxId);
+            return checkbox?.checked ? 'meo' : 'cho';
+        };
+
+        const updatePackageFurOptions = (petTypeKey, packageKey) => {
+            if (!packageFurSelect) return;
+            const options = furOptionMap[petTypeKey]?.[packageKey] || [];
+            const selectedValue = packageFurSelect.value;
+
+            packageFurSelect.innerHTML = options
+                .map((option) => `<option value="${option.value}">${option.label}</option>`)
+                .join('');
+
+            if (options.some((option) => option.value === selectedValue)) {
+                packageFurSelect.value = selectedValue;
+            }
+
+            packageFurSelect.dispatchEvent(new Event('change'));
+        };
+
+        const getWeightRange = (weight) => {
+            if (weight < 1) return '<1kg';
+            if (weight <= 3) return '1-3kg';
+            if (weight <= 5) return '3-5kg';
+            if (weight <= 8) return '5-8kg';
+            if (weight <= 12) return '8-12kg';
+            if (weight <= 15) return '12-15kg';
+            if (weight <= 20) return '15-20kg';
+            if (weight <= 30) return '20-30kg';
+            return null;
+        };
+
+        const getPackagePrice = ({ petType, weight, packageKey, furKey }) => {
+            const weightRange = getWeightRange(weight);
+            if (!weightRange) return null;
+
+            const animalData = priceData.bang_gia[petType];
+            if (!animalData) return null;
+
+            const weightGroup = animalData.find((item) => item.can_nang === weightRange);
+            if (!weightGroup?.goi) return null;
+
+            const packageItem = weightGroup.goi[packageKey];
+            if (!packageItem) return null;
+
+            return packageItem[furKey];
+        };
+
+        const getServicePrice = (serviceKey) => {
+            return priceData.bang_gia.dich_vu_le[serviceKey] || 0;
+        };
+
+        const getSelectedServiceLabels = (fieldId) => {
+            return getSelectedValues(fieldId).map((key) => serviceDisplayNames[key] || key);
+        };
+
+        const formatCurrency = (value) => {
+            return Number(value).toLocaleString('vi-VN');
+        };
+
+        const getCurrencyValue = (el) => {
+            return Number(el.dataset.raw || 0);
+        };
+
+        const restrictNumericInput = (inputId, allowDecimal = false) => {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+
+            input.addEventListener('input', () => {
+                let value = input.value;
+                const pattern = allowDecimal ? /[^0-9.,]/g : /\D/g;
+                value = value.replace(pattern, '');
+
+                if (allowDecimal) {
+                    value = value.replaceAll(',', '.');
+                    const parts = value.split('.');
+                    if (parts.length > 2) {
+                        value = `${parts[0]}.${parts.slice(1).join('')}`;
+                    }
+                }
+
+                input.value = value;
+            });
+        };
+
+        const setCustomValidation = (element, message) => {
+            if (!element) return;
+            element.addEventListener('invalid', () => {
+                element.setCustomValidity(message);
+            });
+            element.addEventListener('input', () => {
+                element.setCustomValidity('');
+            });
+            element.addEventListener('change', () => {
+                element.setCustomValidity('');
+            });
+        };
+
+        const parseNumericValue = (value) => {
+            const cleaned = String(value).replaceAll(/[^\d]/g, '');
+            return cleaned === '' ? null : Number(cleaned);
+        };
+
+        const formatCurrencyInput = (value) => {
+            if (!value) return '';
+            const rawNumber = parseNumericValue(value);
+            if (Number.isNaN(rawNumber)) return '';
+            return `${new Intl.NumberFormat('vi-VN').format(rawNumber)} VNĐ`;
+        };
+
+        const formatPercentInput = (value) => {
+            if (!value) return '';
+            const rawNumber = parseNumericValue(value);
+            if (Number.isNaN(rawNumber)) return '';
+            return `${rawNumber}%`;
+        };
+
+        const closeCustomSelect = (wrapper) => {
+            if (!wrapper) return;
+            wrapper.classList.remove('open');
+            const trigger = wrapper.querySelector('.custom-select-trigger');
+            const popup = wrapper.querySelector('.custom-select-popup');
+            if (trigger) {
+                trigger.setAttribute('aria-expanded', 'false');
+            }
+            if (popup) {
+                popup.classList.add('hidden');
+            }
+        };
+
+        const closeAllCustomSelects = () => {
+            customSelectWrappers.forEach((wrapper) => closeCustomSelect(wrapper));
+        };
+
+        const renderCustomSelectOptions = (wrapper, selectEl) => {
+            const popup = wrapper.querySelector('.custom-select-popup');
+            const label = wrapper.querySelector('.custom-select-label');
+            if (!popup || !label || !selectEl) return;
+
+            const options = Array.from(selectEl.options);
+            const selectedOption = options.find((option) => option.selected) || options[0];
+            label.textContent = selectedOption ? selectedOption.textContent : 'Chọn';
+            popup.innerHTML = '';
+
+            options.forEach((option) => {
+                const optionButton = document.createElement('button');
+                optionButton.type = 'button';
+                optionButton.className = 'custom-select-option';
+                optionButton.textContent = option.textContent;
+                optionButton.dataset.value = option.value;
+                optionButton.setAttribute('role', 'option');
+                optionButton.setAttribute('aria-selected', option.selected ? 'true' : 'false');
+
+                if (option.selected) {
+                    optionButton.classList.add('is-selected');
+                }
+
+                optionButton.addEventListener('click', () => {
+                    selectEl.value = option.value;
+                    selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+                    closeCustomSelect(wrapper);
+                });
+
+                popup.appendChild(optionButton);
+            });
+        };
+
+        const setupCustomSelects = () => {
+            customSelectWrappers.forEach((wrapper) => {
+                const selectEl = wrapper.querySelector('select');
+                const trigger = wrapper.querySelector('.custom-select-trigger');
+                if (!selectEl || !trigger) return;
+
+                renderCustomSelectOptions(wrapper, selectEl);
+
+                trigger.addEventListener('click', () => {
+                    const isOpen = wrapper.classList.contains('open');
+                    closeAllCustomSelects();
+
+                    if (!isOpen) {
+                        wrapper.classList.add('open');
+                        trigger.setAttribute('aria-expanded', 'true');
+                        wrapper.querySelector('.custom-select-popup')?.classList.remove('hidden');
+                    }
+                });
+
+                selectEl.addEventListener('change', () => {
+                    renderCustomSelectOptions(wrapper, selectEl);
+                });
+            });
+
+            document.addEventListener('click', (event) => {
+                customSelectWrappers.forEach((wrapper) => {
+                    if (!wrapper.contains(event.target)) {
+                        closeCustomSelect(wrapper);
+                    }
+                });
+            });
+        };
+
+        const syncCheckboxCards = () => {
+            document.querySelectorAll('.checkbox-item input[type="checkbox"]').forEach((input) => {
+                const parent = input.closest('.checkbox-item');
+                if (!parent) return;
+
+                const updateState = () => {
+                    parent.classList.toggle('is-checked', input.checked);
+                };
+
+                input.addEventListener('change', updateState);
+                updateState();
+            });
+        };
+
+        const refreshCheckboxCardStates = () => {
+            document.querySelectorAll('.checkbox-item input[type="checkbox"]').forEach((input) => {
+                input.closest('.checkbox-item')?.classList.toggle('is-checked', input.checked);
+            });
+        };
+
+        const setupCurrencyInputs = () => {
+            document.querySelectorAll('.currency').forEach(input => {
+                input.dataset.raw = '';
+
+                input.addEventListener('input', e => {
+                    let raw = e.target.value.replaceAll(/\D/g, '');
+                    e.target.dataset.raw = raw;
+                    e.target.value = raw ? formatCurrency(raw) : '';
+                });
+
+                input.addEventListener('change', e => {
+                    if (!e.target.dataset.raw) {
+                        e.target.value = '';
+                        return;
+                    }
+                    e.target.value = `${formatCurrency(e.target.dataset.raw)} VNĐ`;
+                });
+            });
+        };
+
+        restrictNumericInput('package-weight', true);
+        restrictNumericInput('retail-percent', false);
+        setupCurrencyInputs();
+        setupCustomSelects();
+        syncCheckboxCards();
+        document.body.classList.add('is-dashboard');
+
+        if (retailPercentInput) {
+            retailPercentInput.addEventListener('focus', () => {
+                retailPercentInput.value = retailPercentInput.value.replaceAll(/\D/g, '');
+            });
+            retailPercentInput.addEventListener('blur', () => {
+                retailPercentInput.value = formatPercentInput(retailPercentInput.value);
+            });
+        }
+
+        const syncPackageOptions = () => {
+            if (packageSwitchControl && packagePetCheckbox) {
+                packageSwitchControl.classList.toggle('is-dog', !packagePetCheckbox.checked);
+                packageSwitchControl.classList.toggle('is-cat', packagePetCheckbox.checked);
+            }
+            updatePackageFurOptions(getPetTypeKey('package-pet'), packageTuaSelect?.value);
+        };
+        if (packagePetCheckbox) {
+            packagePetCheckbox.addEventListener('change', syncPackageOptions);
+        }
+        if (packageTuaSelect) {
+            packageTuaSelect.addEventListener('change', syncPackageOptions);
+        }
+        syncPackageOptions();
+        setCustomValidation(document.getElementById('package-weight'), 'Cân nặng là bắt buộc.');
+        setCustomValidation(retailPriceInput, 'Giá tiền là bắt buộc.');
+        setCustomValidation(retailPercentInput, 'Phần trăm là bắt buộc.');
+
+        const showResultCard = () => {
+            resultCard.classList.remove('hidden');
+            if (typeof resultCard.showModal === 'function') {
+                if (!resultCard.open) {
+                    resultCard.showModal();
+                }
+            }
+        };
+
+        const renderResult = (title, details) => {
+            resultContent.textContent = '';
+            const summary = document.createElement('div');
+            summary.className = 'result-summary';
+
+            const summaryLabel = document.createElement('div');
+            summaryLabel.className = 'result-summary-label';
+            summaryLabel.textContent = 'Tong ket';
+
+            const summaryValue = document.createElement('div');
+            summaryValue.className = 'result-summary-value';
+            summaryValue.textContent = title;
+
+            summary.appendChild(summaryLabel);
+            summary.appendChild(summaryValue);
+
+            const detailList = document.createElement('div');
+            detailList.className = 'result-details';
+
+            details.forEach(({ label, value }) => {
+                const row = document.createElement('div');
+                row.className = 'result-row';
+
+                const rowLabel = document.createElement('span');
+                rowLabel.className = 'result-row-label';
+                rowLabel.textContent = label;
+
+                const rowValue = document.createElement('span');
+                rowValue.className = 'result-row-value';
+                rowValue.textContent = value;
+
+                row.appendChild(rowLabel);
+                row.appendChild(rowValue);
+                detailList.appendChild(row);
+            });
+
+            resultContent.appendChild(summary);
+            resultContent.appendChild(detailList);
+            showResultCard();
+        };
+
+        const renderErrors = (errors) => {
+            renderResult('Can kiem tra lai du lieu', errors.map((error, index) => ({
+                label: `Loi ${index + 1}`,
+                value: error,
+            })));
+        };
+
+        let activeFormType = null;
+
+        const closeResultPopup = () => {
+            if (typeof resultCard.close === 'function' && resultCard.open) {
+                resultCard.close();
+            }
+            resultCard.classList.add('hidden');
+        };
+
+        if (resultCard && typeof resultCard.addEventListener === 'function') {
+            resultCard.addEventListener('cancel', (event) => {
+                event.preventDefault();
+                closeResultPopup();
+            });
+            resultCard.addEventListener('close', () => {
+                resultCard.classList.add('hidden');
+            });
+        }
+
+        const resetActiveForm = () => {
+            if (activeFormType === 'package') {
+                packageForm.reset();
+                syncPackageOptions();
+            } else if (activeFormType === 'retail') {
+                retailForm.reset();
+                if (retailPriceInput) {
+                    retailPriceInput.dataset.raw = '';
+                    retailPriceInput.value = '';
+                }
+                if (retailPercentInput) {
+                    retailPercentInput.value = '';
+                }
+            }
+            refreshCheckboxCardStates();
+        };
+
+        const resetPackageForm = () => {
+            packageForm.reset();
+            syncPackageOptions();
+            refreshCheckboxCardStates();
+        };
+
+        const resetRetailForm = () => {
+            retailForm.reset();
+            if (retailPriceInput) {
+                retailPriceInput.dataset.raw = '';
+                retailPriceInput.value = '';
+            }
+            if (retailPercentInput) {
+                retailPercentInput.value = '';
+            }
+            refreshCheckboxCardStates();
+        };
+
+        const showSelection = () => {
+            selectionCard.classList.remove('hidden');
+            formsGrid.classList.add('hidden');
+            formsGrid.classList.remove('single-view');
+            document.body.classList.add('is-dashboard');
+            closeResultPopup();
+        };
+
+        const showForm = (formType) => {
+            if (formType === 'package') {
+                resetPackageForm();
+            } else if (formType === 'retail') {
+                resetRetailForm();
+            }
+
+            activeFormType = formType;
+            selectionCard.classList.add('hidden');
+            formsGrid.classList.remove('hidden');
+            formsGrid.classList.add('single-view');
+            document.body.classList.remove('is-dashboard');
+            if (packagePanel) {
+                packagePanel.style.display = formType === 'package' ? 'block' : 'none';
+            }
+            if (retailPanel) {
+                retailPanel.style.display = formType === 'retail' ? 'block' : 'none';
+            }
+            if (formType === 'package') {
+                updatePackageFurOptions(getPetTypeKey('package-pet'), packageTuaSelect?.value);
+            }
+        };
+
+        openPackageBtn.addEventListener('click', () => showForm('package'));
+        openRetailBtn.addEventListener('click', () => showForm('retail'));
+        backPackageBtn.addEventListener('click', showSelection);
+        backRetailBtn.addEventListener('click', showSelection);
+
+        const cancelResultBtn = document.getElementById('cancel-result');
+        const resetResultBtn = document.getElementById('reset-result');
+        if (cancelResultBtn) {
+            cancelResultBtn.addEventListener('click', closeResultPopup);
+        }
+        if (resetResultBtn) {
+            resetResultBtn.addEventListener('click', () => {
+                resetActiveForm();
+                closeResultPopup();
+            });
+        }
+
+        packageForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const petType = getPetType('package-pet');
+            const weightValue = document.getElementById('package-weight').value.trim();
+            const tua = document.getElementById('package-tua').value;
+            const loaiTua = document.getElementById('package-loai-tua').value;
+            const services = getSelectedValues('package-service-group');
+            const weight = Number(weightValue);
+            const errors = [];
+
+            if (!weightValue) {
+                errors.push('Cân nặng là bắt buộc.');
+            } else if (Number.isNaN(weight) || weight <= 0) {
+                errors.push('Cân nặng phải là số lớn hơn 0.');
+            }
+
+            const packagePrice = getPackagePrice({
+                petType: getPetTypeKey('package-pet'),
+                weight,
+                packageKey: tua,
+                furKey: loaiTua,
+            });
+
+            if (packagePrice === null || Number.isNaN(packagePrice)) {
+                errors.push('Không tìm thấy giá gói cho lựa chọn hiện tại.');
+            }
+
+            if (errors.length > 0) {
+                renderErrors(errors);
+                return;
+            }
+
+            const servicePrice = services.reduce((sum, key) => sum + getServicePrice(key), 0);
+            const totalPrice = packagePrice + servicePrice;
+            const selectedServiceLabels = getSelectedServiceLabels('package-service-group');
+
+            renderResult(`${formatCurrency(totalPrice)} VNĐ`, [
+                { label: 'Loại thú cưng', value: petType },
+                { label: 'Cân nặng', value: `${weight} kg` },
+                { label: 'Chọn tua', value: document.querySelector('#package-tua option:checked').textContent },
+                { label: 'Loại tua', value: document.querySelector('#package-loai-tua option:checked').textContent },
+                { label: 'Dịch vụ lẻ', value: selectedServiceLabels.join(', ') || 'Không có' },
+                { label: 'Giá gói', value: `${formatCurrency(packagePrice)} VNĐ` },
+                { label: 'Phụ phí dịch vụ lẻ', value: `${formatCurrency(servicePrice)} VNĐ` },
+                { label: 'Tổng cộng', value: `${formatCurrency(totalPrice)} VNĐ` },
+            ]);
+        });
+
+        retailForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const price = getCurrencyValue(retailPriceInput);
+            const percentRaw = retailPercentInput.value.trim();
+            const serviceItems = getSelectedCheckboxDetails('retail-service-group');
+            const percent = parseNumericValue(percentRaw);
+            const errors = [];
+
+            if (!retailPriceInput.dataset.raw) {
+                errors.push('Giá tiền là bắt buộc.');
+            } else if (Number.isNaN(price) || price < 0) {
+                errors.push('Giá tiền phải là số hợp lệ.');
+            }
+
+            if (!percentRaw) {
+                errors.push('Phần trăm là bắt buộc.');
+            } else if (Number.isNaN(percent) || percent < 0 || percent > 100) {
+                errors.push('Phần trăm phải là số từ 0 đến 100.');
+            }
+
+            if (errors.length > 0) {
+                renderErrors(errors);
+                return;
+            }
+
+            const servicePrice = serviceItems.reduce((sum, item) => sum + item.value, 0);
+            const percentAmount = Math.round(price * (percent / 100));
+            const selectedServiceLabels = serviceItems.map((item) => `${item.label}(${formatCurrency(item.value)} VNĐ)`);
+            const totalPrice = percentAmount + servicePrice;
+
+            renderResult(`${formatCurrency(totalPrice)} VNĐ`, [
+                { label: 'Giá tiền', value: `${formatCurrency(price)} VNĐ` },
+                { label: 'Phần trăm', value: `${percent}%` },
+                { label: 'Dịch vụ lẻ', value: selectedServiceLabels.join(', ') || 'Không có' },
+                { label: 'Số tiền phần trăm', value: `${formatCurrency(percentAmount)} VNĐ` },
+                { label: 'Tổng dịch vụ lẻ', value: `${formatCurrency(servicePrice)} VNĐ` },
+                { label: 'Tổng cộng', value: `${formatCurrency(totalPrice)} VNĐ` },
+            ]);
+        });
+    </script>
+</body>
+
+</html>
