@@ -1904,7 +1904,7 @@
             const selectedServiceLabels = getSelectedServiceLabels('package-service-group');
 
             renderResult(`${formatCurrency(totalPrice)} VNĐ`, [
-                { label: 'Loại thú cưng', value: petType },
+                { label: 'Loại thú cưng', value: !petType ? 'Mèo' : 'Chó' },
                 { label: 'Cân nặng', value: `${weight} kg` },
                 { label: 'Chọn tua', value: document.querySelector('#package-tua option:checked').textContent },
                 { label: 'Loại tua', value: document.querySelector('#package-loai-tua option:checked').textContent },
