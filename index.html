@@ -536,17 +536,70 @@
 
         .checkbox-group {
             display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 12px;
+            gap: 0;
             width: 100%;
-            padding: 18px;
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--line-soft);
-            background: var(--bg-soft);
+            padding: 0;
+            border-radius: 12px;
+            border: 1px solid rgba(185, 126, 113, 0.24);
+            background: #fffdfb;
+            overflow: hidden;
         }
 
-        .checkbox-group legend,
-        .checkbox-group .field-hint {
+        .checkbox-title {
+            display: none;
+        }
+
+        .service-toggle {
+            width: 100%;
+            min-height: 48px;
+            position: relative;
+            justify-content: flex-start;
+            padding: 12px 16px 12px 40px;
+            border-radius: 0;
+            border: 0;
+            background: linear-gradient(180deg, #fdf7f4, #f9efea);
+            color: var(--text-main);
+            font-size: 0.95rem;
+            font-weight: 700;
+            box-shadow: none;
+        }
+
+        .service-toggle:hover {
+            background: linear-gradient(180deg, #fff8f4, #f6e8e2);
+            box-shadow: none;
+        }
+
+        .service-toggle:focus-visible {
+            outline: none;
+            box-shadow: inset 0 0 0 2px rgba(212, 156, 140, 0.35);
+        }
+
+        .service-toggle-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            width: 8px;
+            height: 8px;
+            border-right: 1.5px solid var(--accent-strong);
+            border-bottom: 1.5px solid var(--accent-strong);
+            transform: translateY(-50%) rotate(-45deg);
+            transition: transform 0.2s ease;
+        }
+
+        .service-toggle[aria-expanded="true"] .service-toggle-icon {
+            transform: translateY(-50%) rotate(45deg);
+        }
+
+        .checkbox-group-content {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            padding: 14px 16px 16px;
+            border-top: 1px solid rgba(185, 126, 113, 0.16);
+            background: #fffaf7;
+        }
+
+        .checkbox-group-content .field-hint {
             grid-column: 1 / -1;
         }
 
@@ -1037,7 +1090,7 @@
                                 Chó
                             </span>
                             <label class="switch custom-switch">
-                                <input type="checkbox" id="package-pet" checked aria-label="Chọn chó hoặc mèo">
+                                <input type="checkbox" id="package-pet" aria-label="Chọn chó hoặc mèo">
                                 <span class="slider"></span>
                             </label>
                             <span class="pet-label pet-label-cat">
@@ -1048,7 +1101,7 @@
 
                     <div class="form-control">
                         <label for="package-weight">Cân nặng (kg)</label>
-                        <input type="text" inputmode="decimal" id="package-weight" name="weight" placeholder="Nhập cân nặng" required>
+                        <input type="text" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" enterkeyhint="done" autocomplete="off" id="package-weight" name="weight" placeholder="Nhập cân nặng" required>
                     </div>
                     <div class="tua_options_lt">
                         <div class="form-control">
@@ -1101,18 +1154,23 @@
                         </div>
                     </div>
 
-                    <fieldset class="form-control checkbox-group" id="package-service-group">
-                        <legend>Dịch vụ lẻ</legend>
-                        <p class="field-hint">Chọn thêm nếu có phát sinh.</p>
-                        <label class="checkbox-item"><input type="checkbox" value="danh_rang">Đánh răng</label>
-                        <label class="checkbox-item"><input type="checkbox" value="combo_vip">Combo Vip</label>
-                        <label class="checkbox-item"><input type="checkbox" value="tam_thao_moc">Tắm thảo mọc</label>
-                        <label class="checkbox-item"><input type="checkbox" value="tam_trang">Tắm trắng</label>
-                        <label class="checkbox-item"><input type="checkbox" value="hap_dau">Hấp dầu</label>
-                        <label class="checkbox-item"><input type="checkbox" value="spa_express">Spa Express</label>
-                        <label class="checkbox-item"><input type="checkbox" value="tam_ve">Tắm ve</label>
-                        <label class="checkbox-item"><input type="checkbox" value="tay_cau">Tẩy dầu</label>
-                    </fieldset>
+                    <div class="form-control checkbox-group" id="package-service-group" data-service-collapse>
+                        <p class="checkbox-title">Dịch vụ lẻ</p>
+                        <button type="button" class="service-toggle" data-service-toggle aria-expanded="false">
+                            <span class="service-toggle-text">Dịch vụ lẻ</span>
+                            <span class="service-toggle-icon" aria-hidden="true"></span>
+                        </button>
+                        <div class="checkbox-group-content hidden" data-service-panel>
+                            <label class="checkbox-item"><input type="checkbox" value="danh_rang">Đánh răng</label>
+                            <label class="checkbox-item"><input type="checkbox" value="combo_vip">Combo Vip</label>
+                            <label class="checkbox-item"><input type="checkbox" value="tam_thao_moc">Tắm thảo mọc</label>
+                            <label class="checkbox-item"><input type="checkbox" value="tam_trang">Tắm trắng</label>
+                            <label class="checkbox-item"><input type="checkbox" value="hap_dau">Hấp dầu</label>
+                            <label class="checkbox-item"><input type="checkbox" value="spa_express">Spa Express</label>
+                            <label class="checkbox-item"><input type="checkbox" value="tam_ve">Tắm ve</label>
+                            <label class="checkbox-item"><input type="checkbox" value="tay_cau">Tẩy dầu</label>
+                        </div>
+                    </div>
 
                     <div class="form-actions">
                         <button type="submit">Xem kết quả liệu trình</button>
@@ -1135,26 +1193,31 @@
                 <form id="retail-form">
                     <div class="form-control">
                         <label for="retail-price">Giá tiền</label>
-                        <input class="currency" type="text" inputmode="numeric" id="retail-price" name="price" placeholder="Nhập giá tiền" required>
+                        <input class="currency" type="text" inputmode="numeric" pattern="[0-9]*" enterkeyhint="done" autocomplete="off" id="retail-price" name="price" placeholder="Nhập giá tiền" required>
                     </div>
 
                     <div class="form-control">
                         <label for="retail-percent">Phần trăm</label>
-                        <input type="text" inputmode="numeric" id="retail-percent" name="percent" placeholder="Nhập phần trăm" required>
+                        <input type="text" inputmode="numeric" pattern="[0-9]*" enterkeyhint="done" autocomplete="off" id="retail-percent" name="percent" placeholder="Nhập phần trăm" required>
                     </div>
 
-                    <fieldset class="form-control checkbox-group" id="retail-service-group">
-                        <legend>Dịch vụ lẻ</legend>
-                        <p class="field-hint">Có thể chọn nhiều dịch vụ cộng thêm.</p>
-                        <label class="checkbox-item"><input type="checkbox" value="7000">Đánh răng</label>
-                        <label class="checkbox-item"><input type="checkbox" value="8000">Combo Vip</label>
-                        <label class="checkbox-item"><input type="checkbox" value="10000">Tắm thảo mọc</label>
-                        <label class="checkbox-item"><input type="checkbox" value="10000">Tắm trắng</label>
-                        <label class="checkbox-item"><input type="checkbox" value="10000">Hấp dầu</label>
-                        <label class="checkbox-item"><input type="checkbox" value="10000">Spa Express</label>
-                        <label class="checkbox-item"><input type="checkbox" value="10000">Tắm ve</label>
-                        <label class="checkbox-item"><input type="checkbox" value="15000">Tẩy dầu</label>
-                    </fieldset>
+                    <div class="form-control checkbox-group" id="retail-service-group" data-service-collapse>
+                        <p class="checkbox-title">Dịch vụ lẻ</p>
+                        <button type="button" class="service-toggle" data-service-toggle aria-expanded="false">
+                            <span class="service-toggle-text">Dịch vụ lẻ</span>
+                            <span class="service-toggle-icon" aria-hidden="true"></span>
+                        </button>
+                        <div class="checkbox-group-content hidden" data-service-panel>
+                            <label class="checkbox-item"><input type="checkbox" value="7000">Đánh răng</label>
+                            <label class="checkbox-item"><input type="checkbox" value="8000">Combo Vip</label>
+                            <label class="checkbox-item"><input type="checkbox" value="10000">Tắm thảo mọc</label>
+                            <label class="checkbox-item"><input type="checkbox" value="10000">Tắm trắng</label>
+                            <label class="checkbox-item"><input type="checkbox" value="10000">Hấp dầu</label>
+                            <label class="checkbox-item"><input type="checkbox" value="10000">Spa Express</label>
+                            <label class="checkbox-item"><input type="checkbox" value="10000">Tắm ve</label>
+                            <label class="checkbox-item"><input type="checkbox" value="15000">Tẩy dầu</label>
+                        </div>
+                    </div>
 
                     <div class="form-actions">
                         <button type="submit">Xem kết quả cắt lẻ</button>
@@ -1202,7 +1265,7 @@
 
         const getPetType = (checkboxId) => {
             const checkbox = document.getElementById(checkboxId);
-            return checkbox.checked ? 'Chó' : 'Mèo';
+            return checkbox.checked ? 'Mèo' : 'Chó';
         };
 
         const getSelectedValues = (fieldId) => {
@@ -1388,16 +1451,16 @@
         const furOptionMap = {
             cho: {
                 '10_buoc': [
-                    { value: 'long_sat', label: 'Lông sát' },
                     { value: 'long_dai', label: 'Lông dài' },
+                    { value: 'long_sat', label: 'Lông sát' },
                 ],
                 '12_buoc': [
-                    { value: 'long_sat', label: 'Lông sát' },
                     { value: 'long_dai', label: 'Lông dài' },
+                    { value: 'long_sat', label: 'Lông sát' },
                 ],
                 '18_buoc': [
-                    { value: 'long_sat', label: 'Lông sát' },
                     { value: 'long_dai', label: 'Lông dài' },
+                    { value: 'long_sat', label: 'Lông sát' },
                 ],
                 cao: [
                     { value: 'day_du', label: 'Đầy đủ' },
@@ -1410,16 +1473,16 @@
             },
             meo: {
                 '10_buoc': [
-                    { value: 'khong_long', label: 'Không lông' },
                     { value: 'long_dai', label: 'Lông dài' },
+                    { value: 'khong_long', label: 'Không lông' },
                 ],
                 '12_buoc': [
-                    { value: 'khong_long', label: 'Không lông' },
                     { value: 'long_dai', label: 'Lông dài' },
+                    { value: 'khong_long', label: 'Không lông' },
                 ],
                 '18_buoc': [
-                    { value: 'long_sat', label: 'Lông sát' },
                     { value: 'long_dai', label: 'Lông dài' },
+                    { value: 'long_sat', label: 'Lông sát' },
                 ],
                 cao: [
                     { value: 'day_du', label: 'Đầy đủ' },
@@ -1437,6 +1500,13 @@
             return checkbox?.checked ? 'meo' : 'cho';
         };
 
+        const getDefaultFurOption = (options) => {
+            if (!Array.isArray(options) || options.length === 0) return '';
+            return options.find((option) => option.value === 'long_dai')?.value
+                || options.find((option) => option.value === 'day_du')?.value
+                || options[0].value;
+        };
+
         const updatePackageFurOptions = (petTypeKey, packageKey) => {
             if (!packageFurSelect) return;
             const options = furOptionMap[petTypeKey]?.[packageKey] || [];
@@ -1448,6 +1518,8 @@
 
             if (options.some((option) => option.value === selectedValue)) {
                 packageFurSelect.value = selectedValue;
+            } else {
+                packageFurSelect.value = getDefaultFurOption(options);
             }
 
             packageFurSelect.dispatchEvent(new Event('change'));
@@ -1567,6 +1639,11 @@
             customSelectWrappers.forEach((wrapper) => closeCustomSelect(wrapper));
         };
 
+        const syncCustomSelectUI = (selectEl) => {
+            if (!selectEl) return;
+            selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+        };
+
         const renderCustomSelectOptions = (wrapper, selectEl) => {
             const popup = wrapper.querySelector('.custom-select-popup');
             const label = wrapper.querySelector('.custom-select-label');
@@ -1653,14 +1730,55 @@
             });
         };
 
+        const setupServiceCollapses = () => {
+            document.querySelectorAll('[data-service-collapse]').forEach((group) => {
+                const toggle = group.querySelector('[data-service-toggle]');
+                const panel = group.querySelector('[data-service-panel]');
+                if (!toggle || !panel) return;
+
+                const setExpanded = (expanded) => {
+                    toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+                    panel.classList.toggle('hidden', !expanded);
+                };
+
+                setExpanded(false);
+
+                toggle.addEventListener('click', () => {
+                    const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+                    setExpanded(!isExpanded);
+                });
+            });
+        };
+
         const setupCurrencyInputs = () => {
             document.querySelectorAll('.currency').forEach(input => {
                 input.dataset.raw = '';
+                input.dataset.base = '';
 
                 input.addEventListener('input', e => {
-                    let raw = e.target.value.replaceAll(/\D/g, '');
+                    if (e.target.id === 'retail-price') {
+                        const base = e.target.value.replaceAll(/\D/g, '').slice(0, 3);
+                        e.target.dataset.base = base;
+                        e.target.dataset.raw = base ? `${base}000` : '';
+                        e.target.value = base;
+                        return;
+                    }
+                    const raw = e.target.value.replaceAll(/\D/g, '');
                     e.target.dataset.raw = raw;
                     e.target.value = raw ? formatCurrency(raw) : '';
+                });
+
+                input.addEventListener('focus', e => {
+                    if (e.target.id === 'retail-price') {
+                        e.target.value = e.target.dataset.base || '';
+                    }
+                });
+
+                input.addEventListener('blur', e => {
+                    if (e.target.id === 'retail-price') {
+                        const raw = e.target.dataset.raw || '';
+                        e.target.value = raw ? `${formatCurrency(raw)} VNĐ` : '';
+                    }
                 });
 
                 input.addEventListener('change', e => {
@@ -1677,6 +1795,7 @@
         restrictNumericInput('retail-percent', false);
         setupCurrencyInputs();
         setupCustomSelects();
+        setupServiceCollapses();
         syncCheckboxCards();
         document.body.classList.add('is-dashboard');
 
@@ -1786,11 +1905,13 @@
         const resetActiveForm = () => {
             if (activeFormType === 'package') {
                 packageForm.reset();
+                syncCustomSelectUI(packageTuaSelect);
                 syncPackageOptions();
             } else if (activeFormType === 'retail') {
                 retailForm.reset();
                 if (retailPriceInput) {
                     retailPriceInput.dataset.raw = '';
+                    retailPriceInput.dataset.base = '';
                     retailPriceInput.value = '';
                 }
                 if (retailPercentInput) {
@@ -1802,6 +1923,7 @@
 
         const resetPackageForm = () => {
             packageForm.reset();
+            syncCustomSelectUI(packageTuaSelect);
             syncPackageOptions();
             refreshCheckboxCardStates();
         };
@@ -1810,6 +1932,7 @@
             retailForm.reset();
             if (retailPriceInput) {
                 retailPriceInput.dataset.raw = '';
+                retailPriceInput.dataset.base = '';
                 retailPriceInput.value = '';
             }
             if (retailPercentInput) {
@@ -1904,7 +2027,7 @@
             const selectedServiceLabels = getSelectedServiceLabels('package-service-group');
 
             renderResult(`${formatCurrency(totalPrice)} VNĐ`, [
-                { label: 'Loại thú cưng', value: !petType ? 'Mèo' : 'Chó' },
+                { label: 'Loại thú cưng', value: petType },
                 { label: 'Cân nặng', value: `${weight} kg` },
                 { label: 'Chọn tua', value: document.querySelector('#package-tua option:checked').textContent },
                 { label: 'Loại tua', value: document.querySelector('#package-loai-tua option:checked').textContent },
